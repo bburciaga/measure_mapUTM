@@ -28,6 +28,10 @@
   color: #61dafb;
 }
 
+.sr-only {
+  display: none;
+}
+
 #mapid { height: 600px; }
 
 @keyframes App-logo-spin {

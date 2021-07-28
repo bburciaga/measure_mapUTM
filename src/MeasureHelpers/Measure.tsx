@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { IconButton, makeStyles } from '@material-ui/core';
-import { Marker, Popup, useMapEvents } from 'react-leaflet';
+import { FeatureGroup, Marker, Popup, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 import proj4 from 'proj4';
 import ruler from './ruler.png';
 import dotMarker from './dotMarker.png';
 import RadioButtonCheckedIcon from '@material-ui/icons/RadioButtonChecked';
+
+import { EditControl } from 'react-leaflet-draw';
+import 'leaflet/dist/leaflet.css';
+import 'leaflet-draw/dist/leaflet.draw.css';
 
 const useStyles = makeStyles((theme) => ({
   image: {
@@ -38,19 +42,40 @@ const Measure = ({ map } : { map: any }) => {
   const [position, setPosition] = useState(map.getCenter());
   const [measureMode, setMeasureMode] = useState(false);
 
+  const [mapLayers, setMapLayers] = useState([]);
+  
+  map = useMapEvents({
+    click(e) {
+      setPosition(e.latlng);
+    } 
+  });
+
+  const _onCreate = (e: any) => {
+    console.log(e);
+    const {layerType, layer} = e;
+    if(layerType === 'polyline') {
+      const {_leaflet_id} = layer;
+    }
+  };
+
+  const _onEdited = (e: any) => {
+    
+  }
+
+  const _onDelete = (e: any) => {
+    
+  };
+
+  const _onDrawStart = (e: any) => {
+    
+  };
+
   const handleClick = (event: any) => {
     event.preventDefault();
     setMeasureMode(!measureMode);
   };
   //console.log(measureMode);
   //console.log(position);
-
-  map = useMapEvents({
-    click(e) {
-      console.log(e.latlng);
-      setPosition(e.latlng);
-    } 
-  });
 
   const icon = L.icon({ iconUrl: dotMarker, iconSize: [16,16] });
 
@@ -59,6 +84,22 @@ const Measure = ({ map } : { map: any }) => {
 			<IconButton className={classes.rulerButton} onClick={handleClick}>
 				<img className={classes.image} src={ruler} />
       </IconButton>
+      <FeatureGroup>
+        <EditControl
+          position='topright' 
+          onCreated={_onCreate}
+          onEdited={_onEdited} 
+          onDeleted={_onDelete}
+          onDrawStart={_onDrawStart}
+          draw={{
+            rectangle: false,
+            polyline: true,
+            circle: false,
+            circlemarker: false,
+            marker: false
+          }}
+        />
+      </FeatureGroup>
       { measureMode ? 
         <Marker position={position} icon={icon} >
           <Popup>{utm_zone(position.lng, position.lat)}</Popup>

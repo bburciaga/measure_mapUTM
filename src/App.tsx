@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
+import { MapContainer, TileLayer } from 'react-leaflet'
 import logo from './logo.svg';
 import Measure from './MeasureHelpers/Measure';
 import './App.css';
 
+
 function App() {
   const [map, setMap] = useState<any>(null);
+
 
   return (
     <div className="App">
